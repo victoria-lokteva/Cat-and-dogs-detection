@@ -17,10 +17,10 @@ Every picture contains always only one cat or dog.
 
 * **Model**
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; We are sure that there is only one animal on the picture. Therefore instead of a general-purpose object detector we can write a more simple custom network.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; We are sure that there is only one animal on the picture. Therefore instead of a general-purpose object detector we can build a more simple custom network.
 Unlike common object detectors, this network won't generate any anchor boxes. 
 Instead, it always gives 5 numbers for every image: class label and predicted coordinates of a bounding box.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For transfer learning I used a pre-trained Inception V3 neural network, where the last layer was implaced with a series of fully connected layers. The next-to-last linear layer has 16 outputs, which are independently fed to a classifier with one neuron and to a regressor with four neurons.
-As for loss functions, it was used binary cross entropy for classification and mean intersection over union for a batch for detection.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For transfer learning I used a pre-trained Inception V3 neural network, where the last layer was implaced with a series of fully-connected layers. The next-to-last linear layer has 16 outputs, which are independently fed to a classifier with one neuron and to a regressor with four neurons.
+As for loss functions, it was used binary cross entropy for classification and mean intersection over union over a batch for detection.
 Finally, it was computed the gradient of the difference of classification and detection losses.
