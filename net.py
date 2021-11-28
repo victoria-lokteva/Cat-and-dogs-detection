@@ -3,7 +3,8 @@ import torch.nn as nn
 
 
 class LastLayer(nn.Module):
-    '''the last layer for inception_v3'''
+    """the last layer for inception_v3"""
+
     def __init__(self, in_features):
         super().__init__()
         self.fc = nn.Sequential(
@@ -11,7 +12,7 @@ class LastLayer(nn.Module):
             nn.ELU(),
             nn.Linear(in_features=256, out_features=64),
             nn.ELU(),
-            nn.Linear(in_features=64, out_features=16)
+            nn.Linear(in_features=64, out_features=16),
         )
         self.classifier = nn.Linear(in_features=16, out_features=1)
         self.detector = nn.Linear(in_features=16, out_features=4)
@@ -26,7 +27,6 @@ class LastLayer(nn.Module):
 
 
 class PretrainedNet(nn.Module):
-
     def __init__(self):
         super().__init__()
 

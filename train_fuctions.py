@@ -6,7 +6,7 @@ import time
 
 
 class IOU(nn.Module):
-    '''calculates intersection over union for a batch of images'''
+    """calculates intersection over union for a batch of images"""
 
     def __init__(self):
         super().__init__()
@@ -15,11 +15,9 @@ class IOU(nn.Module):
         # tr - coordinates of a true box, pr - coordinates of a predicted box
 
         # a tensor with the areas of target bounding boxes for each image:
-        true_area = (tr[:, 2] - tr[:, 0]) * (
-                tr[:, 3] - tr[:, 1])
+        true_area = (tr[:, 2] - tr[:, 0]) * (tr[:, 3] - tr[:, 1])
         # a tensor  with the areas of predicted bounding boxes
-        pred_area = (pr[:, 2] - pr[:, 0]) * (
-                pr[:, 3] - pr[:, 1])
+        pred_area = (pr[:, 2] - pr[:, 0]) * (pr[:, 3] - pr[:, 1])
 
         # xi, yi - coordinates of the intersection of true and predicted bounding boxes
         xi_min, yi_min = torch.max(tr[:, 0], pr[:, 0]), torch.max(tr[:, 1], pr[:, 1])
@@ -53,8 +51,8 @@ def training(net, n_epoch, lr, dataloader, device, transfer_learning=None):
 
         for idx, (image, target) in tqdm(enumerate(loader)):
             image = image.to(device)
-            target['label'] = target['label'].to(device)
-            target['boxes'] = target['boxes'].to(device)
+            target["label"] = target["label"].to(device)
+            target["boxes"] = target["boxes"].to(device)
             optimizer.zero_grad()
             if transfer_learning:
                 # it will be used inception_v3 for transfer learning.
@@ -67,9 +65,9 @@ def training(net, n_epoch, lr, dataloader, device, transfer_learning=None):
                 pr_class = pr_class.squeeze()
                 pr_box = pr_box.squeeze()
             # classification loss:
-            loss_cl = loss_f(pr_class, target['label'])
+            loss_cl = loss_f(pr_class, target["label"])
             # detection loss:
-            loss_det = -iou(pr_box, target['boxes'])
+            loss_det = -iou(pr_box, target["boxes"])
             # total_loss:
             loss = loss_cl + loss_det
 
@@ -79,8 +77,18 @@ def training(net, n_epoch, lr, dataloader, device, transfer_learning=None):
             optimizer.step()
 
         if epoch % 5 == 0:
-            print('epoch: ', epoch + 1, '\n', 'Losses for last batch:',
-                  '\n', 'classification loss:', loss_cl, '\n', 'total loss:', total_loss)
+            print(
+                "epoch: ",
+                epoch + 1,
+                "\n",
+                "Losses for last batch:",
+                "\n",
+                "classification loss:",
+                loss_cl,
+                "\n",
+                "total loss:",
+                total_loss,
+            )
     return net
 
 
@@ -97,21 +105,23 @@ def validation(net, dataloader, train_loader, device, threshold=0.51):
     with torch.no_grad():
         for idx, (image, target) in enumerate(test_loader):
             image = image.to(device)
-            target['label'] = target['label'].to(device)
-            target['boxes'] = target['boxes'].to(device)
+            target["label"] = target["label"].to(device)
+            target["boxes"] = target["boxes"].to(device)
 
             pr_class, pr_box = net(image)
             pr_class = (pr_class > threshold).float()
 
-            labels.extend(target['label'].tolist())
+            labels.extend(target["label"].tolist())
             pred_labels.extend(pr_class.squeeze().tolist())
-            io = iou(pr_box, target['boxes'])
+            io = iou(pr_box, target["boxes"])
             total_miou += io
 
     accuracy = accuracy_score(labels, pred_labels)
     t = time.time() - t0
-    print('mIoU %0.0f%%,' % ((total_miou / (idx + 1)) * 100),
-          'classification accuracy %0.0f%%,' % (accuracy * 100),
-          '%0.2fs,' % (t),
-          '%0.0f train,' % (len(train_loader.dataset)),
-          '%0.0f valid.' % (len(dataloader.dataset)))
+    print(
+        "mIoU %0.0f%%," % ((total_miou / (idx + 1)) * 100),
+        "classification accuracy %0.0f%%," % (accuracy * 100),
+        "%0.2fs," % (t),
+        "%0.0f train," % (len(train_loader.dataset)),
+        "%0.0f valid." % (len(dataloader.dataset)),
+    )
