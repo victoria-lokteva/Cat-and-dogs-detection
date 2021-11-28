@@ -15,8 +15,8 @@ augmentations = imgaug.augmenters.Sequential(
     [imgaug.augmenters.flip.Fliplr(0.5),
      imgaug.augmenters.flip.Flipud(0.5)]
 )
-train_path = 'cats_dogs_dataset/train/'
-test_path = 'cats_dogs_dataset/valid/'
+train_path = '/home/wildkatze/cats_dogs_dataset/train/'
+test_path = '/home/wildkatze/cats_dogs_dataset/valid/'
 resize = transforms.Compose([transforms.Resize((299, 299))])
 
 train_data = Dataset(train_path, resize, augmentation=augmentations)
@@ -27,7 +27,7 @@ test_dataloader = torch.utils.data.DataLoader(test_data, batch_size=512, shuffle
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 net = PretrainedNet()
-net = training(net=net, n_epoch=15, lr=0.01, dataloader=train_dataloader, train_loader=train_dataloader, device=device,
+net = training(net=net, n_epoch=15, lr=0.01, dataloader=train_dataloader,  device=device,
                transfer_learning=True)
 
 validation(net, test_dataloader, device)
