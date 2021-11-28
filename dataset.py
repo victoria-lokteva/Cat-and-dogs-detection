@@ -71,7 +71,8 @@ class Dataset(torch.utils.data.Dataset):
         target["boxes"] = [xmin, ymin, xmax, ymax]
         return target
 
-    def absolute_cords(self, image, target):
+    @staticmethod
+    def absolute_cords( image, target):
         # convert relative coordinates of a bounding box to absolute coordinates
         width, height = image.size
         xmin, ymin = target["boxes"][0] * width, target["boxes"][1] * height
