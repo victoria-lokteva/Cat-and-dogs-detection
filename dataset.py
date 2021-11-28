@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 from imgaug.augmentables.bbs import BoundingBoxesOnImage, BoundingBox
 import os
-
+import pandera as pa
 
 class Dataset(torch.utils.data.Dataset):
     def __init__(self, path, transform=None, augmentation=None):
@@ -17,9 +17,11 @@ class Dataset(torch.utils.data.Dataset):
         self.images = sorted([el for el in files if ".jpg" in el])
         self.labels = sorted([el for el in files if ".txt" in el])
 
-    def __len__(self):
+    @pa.check_types
+    def __len__(self) -> int:
         return len(self.images)
 
+    @pa.check_types
     def __getitem__(self, item: int):
         image_path = os.path.join(self.path, self.images[item])
         label_path = os.path.join(self.path, self.labels[item])
