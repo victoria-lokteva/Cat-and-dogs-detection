@@ -1,0 +1,31 @@
+
+
+rule all:
+    input:
+        "Abyssinian_10.jpg",
+        "Abyssinian_14.jpg",
+        "Abyssinian_1.jpg"
+
+
+rule showimages:
+    params:
+        cli="cli.py"
+    shell:
+        "python {params.cli} printimage {input} "
+
+
+rule listdataset:
+    output:
+        "datasetlist.txt"
+    params:
+        cli="cli.py",
+        name = "test"
+    shell:
+        "python {params.cli} listimages {params.name} >> {output}"
+
+
+rule randomimage:
+    params:
+        cli="cli.py"
+    shell:
+        "python {params.cli} randomimage "
